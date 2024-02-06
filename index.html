@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Description du DOM</h1>
+
     <ul>
         <li>
             Le DOM est une interface de programmation.
@@ -18,5 +19,12 @@
             Il représente les noeuds interconnectés (balises) d'une page HTML
         </li>
     </ul>
+
+    <script>
+    let list = document.querySelector("ul")
+    let listElements = list.querySelectorAll("li")
+    console.log("la liste", list);
+    console.log ("les éléments", listElements)
+</script>
 </body>
 </html>
