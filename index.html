@@ -2,29 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exo Manip DOM</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Exo manip DOM</title>
 </head>
 <body>
-    <h1>Description du DOM</h1>
-
-    <ul>
-        <li>
-            Le DOM est une interface de programmation.
-        </li>
-        <li>
-            L'acronyme signifie : Document Object Model.
-        </li>
-        <li>
-            Il représente les noeuds interconnectés (balises) d'une page HTML
-        </li>
-    </ul>
+    
+    <div id="board"></div>
 
     <script>
-    let list = document.querySelector("ul")
-    let listElements = list.querySelectorAll("li")
-    console.log("la liste", list);
-    console.log ("les éléments", listElements)
-</script>
+
+        function shuffleChildren(parent){
+            //mélange de Fischer-Yates
+            let children = parent.children
+            let i = children.length, k, temp
+            while(--i > 0){
+                k = Math.floor(Math.random() * (i + 1))
+                temp = children[k]
+                children[k] = children[i]
+                parent.appendChild(temp)
+                }
+        }
+
+        const box = document.createElement("div")
+        box.classList.add("box")
+
+        const board = document.querySelector("#board")
+
+        //de 1 à 10 inclu, on génère des clones de box, qui prennent en text l'iteration du compteur.
+        for(let i = 1; i <= 10; i++){
+            let newbox = box.cloneNode()
+            newbox.innerText = i
+            board.appendChild(newbox)
+
+            newbox.addEventListener("click", function(){
+                console.log("Boite n°"+ i +", click !")
+                newbox.classList.add("box-valid")
+            })
+        }
+
+        shuffleChildren(board)
+    
+    </script>
 </body>
 </html>
