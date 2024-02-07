@@ -10,83 +10,136 @@
 <body>
     
     <div id="board"></div>
+    <div id="time"></div>
 
     <script>
 
         function shuffleChildren(parent){
             //mélange de Fischer-Yates
-            let children = parent.children
-            let i = children.length, k, temp
+            let children = parent.children;
+            let i = children.length, k, temp;
             while(--i > 0){
-                k = Math.floor(Math.random() * (i + 1))
-                temp = children[k]
-                children[k] = children[i]
-                parent.appendChild(temp)
+                k = Math.floor(Math.random() * (i + 1));
+                temp = children[k];
+                children[k] = children[i];
+                parent.appendChild(temp);
                 }
         }
 
         function showReaction(type, clickedBox){
-            clickedBox.classList.add(type)
-            if(type !== "success"){
-                setTimeout(function(){
-                    clickedBox.classList.remove(type)
-                }, 800)
-            }
+            clickedBox.classList.add(type);
+            setTimeout(function(){
+                clickedBox.classList.remove(type,);
+            }, 800)
         }
 
-        function startNewGame(type, clickedBox){
-            if(type == "success"){
-                setTimeout(function(){
-                    clickedBox.removeAttribute("class")
-                    clickedBox.classList.add("box")
-                }, 800)
+        // le chrono des ténèbres que j'ai complètement inventé de a à z
+        function chronoStart(){
+            setInterval(function (){
+                mili++;
+                    if (mili > 9) {
+                        mili = 0;
+                    }
+            }, 1);
+            
+            centi++;
+            centi*10;
+
+            if (centi > 9) {
+                centi = 0;
+                sec++;
+            }  
+
+            if (sec < 10) {
+                sec_ = "0" + sec;
             }
+            else {
+                sec_ = sec;
+            }
+                
+            afficher = sec_ + ":" + centi + mili;
+            document.getElementById("timer").innerText = afficher;
+            
+            reglage = window.setTimeout("chronoStart();",100);
         }
 
-        const box = document.createElement("div")
-        box.classList.add("box")
+        function chronoStop(){
+            window.clearTimeout(reglage);
+        }
 
-        const board = document.querySelector("#board")
+//---------------------------------------------------------------------------------------------------------------------------------------------
+
+        const box = document.createElement("div");
+        box.classList.add("box");
+
+        const timer = document.createElement("time");
+        timer.id = "timer";
+
+        const board = document.querySelector("#board");
+        const time = document.querySelector("#time");
+
+        time.appendChild(timer);
+
+
 
         //numéro de la boite à cliquer, initialisé à la même valeur que le compteur de la boucle for
-        let nb = 1
+        let nb = 1;
 
         //prompt demandant à l'utilisateur le nombre de boites à afficher
-        let nbBoites = prompt("Entrez le nombre de boites désiré :")
+        let nbBoites = prompt("Entrez le nombre de boites désiré :");
+
+        let mili = 0;
+        let centi = 0;
+        let sec = 0;
+
+        timer.innerText = "0" + sec + ":" + "0" + mili;
 
         //de 1 à 10 inclu, on génère des clones de box, qui prennent en text l'iteration du compteur.
         for(let i = 1; i <= nbBoites; i++){
-            const newbox = box.cloneNode()
-            newbox.innerText = i
-            board.appendChild(newbox)
-
+            const newbox = box.cloneNode();
+            newbox.innerText = i;
+            board.appendChild(newbox);
+            
             newbox.addEventListener("click", function(){
                 //on vérifie que la case à le bon nombre avant de la rendre clickable
                 if(i == nb){
-                    newbox.classList.add("box-valid")
+                    newbox.classList.add("box-valid");
                     if(nb == board.children.length){
                         board.querySelectorAll(".box").forEach(function(box){
-                            showReaction("success", box)
-                            startNewGame("success", box)
+                            showReaction("success", box);
                         })
+                        nb = 1;
+                        board.querySelectorAll(".box-valid").forEach(function(validBox){
+                            validBox.classList.remove("box-valid");
+                        })
+                        shuffleChildren(board);
+                    } else {
+                        nb++;
+                        shuffleChildren(board);
                     }
-                    nb++
                 }
                 else if(i > nb){
-                    showReaction("error", newbox)
-                    nb = 1
+                    showReaction("error", newbox);
+                    nb = 1;
                     board.querySelectorAll(".box-valid").forEach(function(validBox){
-                        validBox.classList.remove("box-valid")
+                        validBox.classList.remove("box-valid");
                     })
+                    shuffleChildren(board);
                 }
                 else{
-                    showReaction("notice", newbox)
+                    showReaction("notice", newbox);
                 }
+            })
+
+            newbox.addEventListener("click", function(){
+                //si chrono pas démarré, démarrer
+                //sinon ne rien faire
+                //si fin jeu, stop chrono
             })
         }
 
-        shuffleChildren(board)
-    
+        shuffleChildren(board);
+
     </script>
 </body>
 </html>
